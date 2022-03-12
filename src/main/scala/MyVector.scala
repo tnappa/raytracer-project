@@ -2,6 +2,7 @@ import scala.math._
 
 class MyVector(val x: Double, val y: Double, val z: Double) {
   def asUnit: MyVector = {
+    require(this.lenght != 0)
     this * (1 / this.lenght)
   }
 

@@ -1,8 +1,11 @@
 import scala.math._
 
 class MyVector(val x: Double, val y: Double, val z: Double) {
+
+  override def toString: String = s"${x}i + ${y}j + ${z}k"
+
   def asUnit: MyVector = {
-    require(this.lenght != 0)
+    require(this.lenght != 0, "zero vector does not have a unit vector")
     this * (1 / this.lenght)
   }
 
@@ -33,6 +36,6 @@ class MyVector(val x: Double, val y: Double, val z: Double) {
   }
 
   def +(other: MyVector): MyVector = {
-    new MyVector(this.x + other.x, this.y + other.y, this.z + other.y)
+    new MyVector(this.x + other.x, this.y + other.y, this.z + other.z)
   }
 }

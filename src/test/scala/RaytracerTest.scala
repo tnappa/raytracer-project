@@ -39,6 +39,16 @@ class RaytracerTest extends AnyFlatSpec {
     new Sphere(new MyVector(0, 0, 0), 100.0)
   )
 
+  // test only for basic orthogonal walls
+  val testWalls = Vector(
+    new Wall(new MyVector(1, 0, 0), new MyVector(0, 0, 0)),
+    new Wall(new MyVector(0, 1, 0), new MyVector(0, 0, 0)),
+    new Wall(new MyVector(0, 0, 1), new MyVector(0, 0, 0)),
+    new Wall(new MyVector(-1, 0, 0), new MyVector(100, 0, 0)),
+    new Wall(new MyVector(0, -1, 0), new MyVector(0, 100, 0)),
+    new Wall(new MyVector(0, 0, -1), new MyVector(0, 0, 100))
+  )
+
 
   "MyVector lenght method" should "calculate lenght correctly" in {
     for (v <- testVectors) {
@@ -122,6 +132,20 @@ class RaytracerTest extends AnyFlatSpec {
         normal.get.x shouldBe (intersection.get - sphere.center).x
         normal.get.y shouldBe (intersection.get - sphere.center).y
         normal.get.z shouldBe (intersection.get - sphere.center).z
+      }
+    }
+  }
+
+
+  "Wall intersection method" should "return a point on the wall" in {
+    for {
+      ray <- testRays
+      wall <- testWalls
+    } {
+      val intersection = wall.intersection(ray)
+
+      if (intersection.isDefined) {
+        (intersection.get - wall.position) * wall.normal(ray).get shouldBe 0.0 +- 0.000001
       }
     }
   }

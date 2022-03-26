@@ -1,3 +1,5 @@
+package Raytracer
+
 import java.awt.Color
 
 class Wall(normal:        MyVector,

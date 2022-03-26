@@ -1,3 +1,5 @@
+package Raytracer
+
 import java.awt.Color
 
 // r, g and b values are between 0 and 1.0

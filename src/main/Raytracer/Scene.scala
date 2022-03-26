@@ -1,11 +1,11 @@
+package Raytracer
+
+import Raytracer.Constants._
+
 import java.awt.Color
-import scala.util.Random
 import scala.math._
 
 class Scene {
-
-  private val random = new Random()
-  private val maxDepth = 30
 
   private var objectList = Vector[Object]()
   private var viewr: Option[Viewer] = None

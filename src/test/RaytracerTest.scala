@@ -1,3 +1,5 @@
+import Raytracer._
+
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers._
 import scala.math._

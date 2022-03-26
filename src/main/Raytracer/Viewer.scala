@@ -1,14 +1,12 @@
+package Raytracer
+
+import Raytracer.Constants._
+
 import scala.math._
 
 class Viewer(val position: MyVector, fac: MyVector) {
 
   val facing = fac.asUnit
-
-  // temporary place for the width and heigth of the rendered image / viewport
-  val width = 500
-  val heigth = 500
-
-  val fov = Pi/2 // 90 degree field of view
 
   val up = new MyVector(0, 1, 0)
   val xStep = (up crossProduct facing).asUnit * -(2 * tan(fov/2) / (width - 1))

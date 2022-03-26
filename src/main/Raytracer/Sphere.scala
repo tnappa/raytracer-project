@@ -1,3 +1,5 @@
+package Raytracer
+
 import java.awt.Color
 import scala.math._
 

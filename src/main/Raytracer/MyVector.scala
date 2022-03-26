@@ -1,3 +1,5 @@
+package Raytracer
+
 import scala.math._
 
 class MyVector(val x: Double, val y: Double, val z: Double) {

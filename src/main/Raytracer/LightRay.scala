@@ -1,3 +1,5 @@
+package Raytracer
+
 import java.awt.Color
 
 class LightRay(val direction: MyVector, val origin: MyVector, val color: Color = Color.WHITE) extends MyVector(direction.x, direction.y, direction.z) {

@@ -9,7 +9,7 @@ class Wall(normal:        MyVector,
 
   require(normal.lenght != 0, "Wall must have non-zero normal")
 
-  def normal(ray: LightRay): Option[MyVector] = Some(normal) // unlike for sphere, returns Some(normal) even when the ray doesn't intersect this
+  def normal(position: MyVector): MyVector = normal
 
   // Calculates intersection using line-plane intersection formula https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
   // Only returns an intersection that is in the direction of the ray

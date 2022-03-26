@@ -6,7 +6,7 @@ trait Object {
   val emittance: Double
   val isSmooth: Boolean
 
-  def normal(vector: LightRay): Option[MyVector]
+  def normal(position: MyVector): MyVector // does not check if the given position is on the surface of the object
   def intersection(vector: LightRay): Option[MyVector]
 
 }

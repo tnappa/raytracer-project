@@ -10,10 +10,8 @@ class Sphere(val center:        MyVector,
 
   override def toString: String = s"center: ${center.toString}, radius: ${radius}"
 
-  def normal(ray: LightRay): Option[MyVector] = {
-    if (intersection(ray).isDefined) {
-      Some(intersection(ray).get - this.center)
-    } else None
+  def normal(position: MyVector): MyVector = {
+    position - this.center
   }
 
   // Calculates intersection using line-sphere intersection formula https://en.wikipedia.org/wiki/Line%E2%80%93sphere_intersection

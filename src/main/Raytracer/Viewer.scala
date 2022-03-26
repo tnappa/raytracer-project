@@ -9,11 +9,11 @@ class Viewer(val position: MyVector, fac: MyVector) {
   val facing = fac.asUnit
 
   val up = new MyVector(0, 1, 0)
-  val xStep = (up crossProduct facing).asUnit * -(2 * tan(fov/2) / (width - 1))
-  val yStep = (xStep crossProduct facing).asUnit * -(2 * tan(fov/2) / (width - 1))
+  val xStep = (up crossProduct facing).asUnit * -(2 * tan(Fov/2) / (Width - 1))
+  val yStep = (xStep crossProduct facing).asUnit * -(2 * tan(Fov/2) / (Width - 1))
 
   // a vector that points from this.position to the (0, 0) pixel (top left) of the viewport
-  val origin = facing + (xStep.asUnit * -tan(fov)) + (yStep * -(heigth.toDouble / 2))
+  val origin = facing + (xStep.asUnit * -tan(Fov)) + (yStep * -(Heigth.toDouble / 2))
 
   // generates a white light ray that intersects the given x, y coordinates of the viewport
   def generateRay(x: Int, y: Int): LightRay = {

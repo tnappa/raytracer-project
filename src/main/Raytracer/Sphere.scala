@@ -3,8 +3,8 @@ package Raytracer
 import java.awt.Color
 import scala.math._
 
-class Sphere(val center:        MyVector,
-             val radius:        Double,
+class Sphere(val center:    MyVector,
+             val radius:    Double,
              val color:     Color      = Color.WHITE,
              val emittance: Double     = 0.0,
              val isSmooth:  Boolean    = true

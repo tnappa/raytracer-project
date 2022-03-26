@@ -5,10 +5,10 @@ import scala.util.Random
 
 package object Constants {
 
-  val random = new Random()
-  val maxDepth = 30
-  val width = 500
-  val heigth = 500
-  val fov = Pi/2 // 90 degree field of view
+  val Random = new Random()
+  val MaxDepth = 30
+  val Width = 500
+  val Heigth = 500
+  val Fov = Pi/2 // 90 degree field of view
 
 }

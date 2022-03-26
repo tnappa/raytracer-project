@@ -3,7 +3,7 @@ package Raytracer
 import java.awt.Color
 
 class Wall(normal:        MyVector,
-           val position:      MyVector,
+           val position:  MyVector,
            val color:     Color     = Color.WHITE,
            val emittance: Double    = 0.0,
            val isSmooth:  Boolean   = true

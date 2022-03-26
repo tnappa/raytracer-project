@@ -128,12 +128,13 @@ class RaytracerTest extends AnyFlatSpec {
       sphere <- testSpheres
     } {
       val intersection = sphere.intersection(ray)
-      val normal = sphere.normal(ray)
 
-      if (normal.isDefined) {
-        normal.get.x shouldBe (intersection.get - sphere.center).x
-        normal.get.y shouldBe (intersection.get - sphere.center).y
-        normal.get.z shouldBe (intersection.get - sphere.center).z
+      if (intersection.isDefined) {
+        val normal = sphere.normal(intersection.get)
+
+        normal.x shouldBe (intersection.get - sphere.center).x
+        normal.y shouldBe (intersection.get - sphere.center).y
+        normal.z shouldBe (intersection.get - sphere.center).z
       }
     }
   }
@@ -147,7 +148,7 @@ class RaytracerTest extends AnyFlatSpec {
       val intersection = wall.intersection(ray)
 
       if (intersection.isDefined) {
-        (intersection.get - wall.position) * wall.normal(ray).get shouldBe 0.0 +- 0.000001
+        (intersection.get - wall.position) * wall.normal(ray) shouldBe 0.0 +- 0.000001
       }
     }
   }

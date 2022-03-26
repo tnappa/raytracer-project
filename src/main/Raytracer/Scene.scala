@@ -18,7 +18,7 @@ class Scene {
 
   def tracePath(ray: LightRay, depth: Int): Color = {
 
-    if (depth >= maxDepth) return Color.BLACK
+    if (depth >= MaxDepth) return Color.BLACK
 
     var intersectingObjs = Vector[(Object, MyVector)]()
 
@@ -36,9 +36,9 @@ class Scene {
     val normal = obj.normal(intersection)
 
     val randomUnitVector = {
-      val x = random.nextGaussian
-      val y = random.nextGaussian
-      val z = random.nextGaussian
+      val x = Random.nextGaussian
+      val y = Random.nextGaussian
+      val z = Random.nextGaussian
       val scalar = 1 / sqrt( pow(x, 2) + pow(y, 2) + pow(z, 2) )
 
       new MyVector(x, y, z) * scalar

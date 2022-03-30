@@ -1,9 +1,0 @@
-I have added LightRay, MyVector, Scene, Sphere, Viewer and Wall classes and the Object trait. The LightRay, MyVector, Sphere and Wall classes and the Object trait are mostly complete. I might implement a reflectRay method to all Objects at some point. I still need to implement the raytracing algorithm to Scene / viewer classes.
-
-Basic vector calculations apart from cross product have been tested to work correctly. Wall and Sphere intersection methods have been tested to return a point on the surface when an intersection exists and Sphere normal method has been tested to return a vector normal to the sphere at the given position.
-
-I haven't faced any too difficult problems.
-
-I have spent about 10 hours on the project in the last two weeks.
-
-I am slightly behind, because I was supposed to have a somewhat working raytracing algorith at this point.

@@ -26,6 +26,6 @@ class MyColor(val r: Double, val g: Double, val b: Double) {
   }
 
   def asAwtColor: Color = {
-    new Color(r.toFloat, g.toFloat, b.toFloat)
+    new Color(r.toFloat min 1.0F, g.toFloat min 1.0F, b.toFloat min 1.0F)
   }
 }

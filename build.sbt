@@ -6,5 +6,7 @@ libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.11" % "test"
 
 lazy val root = (project in file("."))
   .settings(
-    name := "Raytracer"
+    name := "Raytracer",
+    Compile / scalaSource := baseDirectory.value / "src/main",
+    Test / scalaSource := baseDirectory.value / "src/test"
   )

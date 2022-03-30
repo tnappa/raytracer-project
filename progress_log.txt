@@ -1,0 +1,25 @@
+
+16.03.
+
+I have added LightRay, MyVector, Scene, Sphere, Viewer and Wall classes and the Object trait. The LightRay, MyVector, Sphere and Wall classes and the Object trait are mostly complete. I might implement a reflectRay method to all Objects at some point. I still need to implement the raytracing algorithm to Scene / viewer classes.
+
+Basic vector calculations apart from cross product have been tested to work correctly. Wall and Sphere intersection methods have been tested to return a point on the surface when an intersection exists and Sphere normal method has been tested to return a vector normal to the sphere at the given position.
+
+I haven't faced any too difficult problems.
+
+I have spent about 10 hours on the project in the last two weeks.
+
+I am slightly behind, because I was supposed to have a somewhat working raytracing algorith at this point.
+
+
+30.03.
+
+I have added an object that stores all the necessary constants in the same place. I have done the main ray tracing algorithm that calculates the color value of each pixel. I also added basic functionality to RaytracerApp.scala to show the render on screen. I also added a new class called MyColor that helps with color calculations. Rendering a 500x500 scene with 350 samples per pixel and reflection depth of 5 takes now about 140s.
+
+I haven't added any tests for the new functionality yet but the renders look right so there shouldn't be any large mistakes.
+
+There's been two problems which I haven't been able to solve yet. The renders look way too dim when the light source is small. This could possibly be fixed by allowing points to reflect / emmit a larger color value than the current maximum of 255 of each red, green and blue. I also haven't been able to add parallel threads efficiently. Every way I have added paralellism to the rendering functions, has increased the rendering time.
+
+I have spent about 10 hours on the project in the last two weeks.
+
+I am behind schedule due to having a lot less time to spend on the project than expected.

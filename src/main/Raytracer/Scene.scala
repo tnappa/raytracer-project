@@ -1,14 +1,19 @@
 package Raytracer
 
 import Raytracer.Constants._
+import Raytracer.Helpers.{MyColor, MyVector}
 
-import java.awt.Color
 import javax.swing.JFrame
+import scala.annotation.tailrec
 
 class Scene {
 
   private var objectList = Vector[Object]()
   private var viewr: Option[Viewer] = None
+  private var name_ = "Raytracer"
+
+  def name = name_
+  def setName(s: String): Unit = name_ = s
 
   def objects = objectList
   def addObject(obj: Object): Unit = objectList = objectList :+ obj
@@ -16,11 +21,10 @@ class Scene {
   def addViewer(viewer: Viewer): Unit = this.viewr = Some(viewer)
   def viewer = viewr
 
-  // heavily inspired by https://en.wikipedia.org/wiki/Path_tracing#Algorithm
-  def tracePath(ray: LightRay, prevObj: Option[Object], depth: Int): Color = {
-
+  // inspired by https://en.wikipedia.org/wiki/Path_tracing#Algorithm
+  @tailrec final def tracePath(ray: LightRay, prevObj: Option[Object], depth: Int): MyColor = {
     // if ray bounced enough times return black
-    if (depth >= MaxDepth) return Color.BLACK
+    if (depth >= MaxDepth) return MyColor.BLACK
 
     var intersectingObjs = Vector[(Object, MyVector)]()
 
@@ -32,13 +36,16 @@ class Scene {
     }
 
     // return black if ray doesn't intersect anything
-    if (intersectingObjs.isEmpty) return Color.BLACK
+    if (intersectingObjs.isEmpty) return MyColor.BLACK
 
     // choose object and intersection point closest to light rays origin
     val (obj, intersection) = intersectingObjs.minBy{ case (obj, intersect) => (ray.origin - intersect).lenght }
     val normal = obj.normal(intersection)
 
-    // calculate reflected ray by randomly picking a ray in the hemisphere of normal
+    // for now objects can either reflect or emmit light, but not both
+    if (obj.emittance > 0.0) return MyColor(obj.color) * ray.color * obj.emittance
+
+    // calculate diffuse reflection by randomly picking a ray in the hemisphere of normal
     def renderDiffuse(normal: MyVector, intersection: MyVector): LightRay = {
       val randomUnitVector = {
         val x = Random.nextGaussian
@@ -53,7 +60,7 @@ class Scene {
       new LightRay(direction, intersection)
     }
 
-    // calculate reflected ray using Snell's law
+    // calculate mirror reflection using Snell's law
     def renderMirror(normal: MyVector, intersection: MyVector, incoming: MyVector): LightRay = {
       val direction = incoming + (normal * 2 * ((normal * -1) * incoming))
       new LightRay(direction, intersection)
@@ -63,12 +70,10 @@ class Scene {
       if (obj.isSmooth) renderDiffuse(normal, intersection)
       else renderMirror(normal, intersection, ray.direction)
 
-    val incoming = tracePath(newRay, Some(obj), depth + 1)
+    // multiply incoming rays color with objects color to get color that is reflected
+    newRay.setColor(ray.color * MyColor(obj.color))
 
-    // reflected ray's color = color emitted by obj + color reflected by obj
-    // each colors maximum value is limited to 255
-    ((new MyColor(obj.color) * obj.emittance) + (new MyColor(obj.color) * new MyColor(incoming))).asAwtColor
-
+    tracePath(newRay, Some(obj), depth + 1)
   }
 
   // renders scene by changing values corresponding to each pixel in imgArray and update frame each iteration
@@ -87,23 +92,15 @@ class Scene {
 
   // compute color for each ray corresponding to each pixel in the final image
   def computeColor(x: Int, y: Int, imgArray: Array[Int]): Int = {
-    var rVal = 0
-    var gVal = 0
-    var bVal = 0
+    var color = MyColor.BLACK
+    val rays = viewer.get.rays
     for (i <- 0 until NumOfSamples) {
-      val ray = viewer.get.generateRay(x, y)
-      val color = tracePath(ray, None, 0)
-      rVal += color.getRed
-      gVal += color.getGreen
-      bVal += color.getBlue
+      val ray = rays(x)(y)
+      color = color + tracePath(ray, None, 0)
     }
-    val red = rVal / NumOfSamples
-    val green = gVal / NumOfSamples
-    val blue = bVal / NumOfSamples
-    imgArray(y * Width + x) = (red << 16) + (green << 8) + blue
-    println(s"${x}, ${y}: ${red} ${green} ${blue}")
-
-    (red << 16) + (green << 8) + blue
+    val awtCol = (color * (1.0/ NumOfSamples)).asAwtColor
+    val rgb = awtCol.getRGB
+    awtCol.getRGB
     }
 
 }

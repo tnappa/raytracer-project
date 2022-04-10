@@ -1,6 +1,7 @@
 package Raytracer.IO
 
-import Raytracer.{MyIterator, MyVector, Scene, Sphere, Viewer, Wall}
+import Raytracer.Helpers.{MyIterator, MyVector}
+import Raytracer.{Scene, Sphere, Viewer, Wall}
 
 import java.awt.Color
 import java.io.{BufferedReader, FileNotFoundException, FileReader, IOException}
@@ -18,14 +19,19 @@ object FileIO {
 
     try {
 
+      def currentLine: String = lines.current
+
       lines.next()
-      if (!lines.current.startsWith("scene")) throw new CorruptedFileException("Invalid file type")
+      if (!currentLine.startsWith("scene")) throw new CorruptedFileException("Invalid file type")
+
+      val name = currentLine.dropWhile(_ != ' ').trim
+      if (name.nonEmpty) scene.setName(name)
 
       while (lines.hasNext) {
-        lines.current match {
-          case "@sphere" => parseSphere()
-          case "@wall"   => parseWall()
-          case "@viewer" => parseViewer()
+        currentLine match {
+          case s if s.startsWith("@sphere") => parseSphere()
+          case s if s.startsWith("@wall")   => parseWall()
+          case s if s.startsWith("@viewer") => parseViewer()
           case _ => lines.next()
         }
       }
@@ -59,8 +65,9 @@ object FileIO {
     val radius = Try {
       values("r") match { case Array(PosDouble(r)) => r }
     }.toOption
+    val name = getName(values).getOrElse("sphere")
 
-    if (position.isEmpty || radius.isEmpty) throw new CorruptedFileException("Invalid sphere parameters")
+    if (position.isEmpty || radius.isEmpty) throw new CorruptedFileException(s"Invalid ${name} parameters")
 
     val sphere = new Sphere(position.get, radius.get)
     setObjectAttributes(sphere, values)
@@ -75,8 +82,9 @@ object FileIO {
     val normal = Try {
       values("n") match { case Array(Double(x), Double(y), Double(z)) => new MyVector(x, y, z) }
     }.toOption
+    val name = getName(values).getOrElse("wall")
 
-    if (position.isEmpty || normal.isEmpty) throw new CorruptedFileException("Invalid wall parameters")
+    if (position.isEmpty || normal.isEmpty) throw new CorruptedFileException(s"Invalid ${name} parameters")
 
     val wall = new Wall(normal.get, position.get)
     setObjectAttributes(wall, values)
@@ -103,9 +111,18 @@ object FileIO {
     }.toOption
   }
 
+  private def getName(values: Map[String, Array[String]]): Option[String] = {
+    Try {
+      values("name") match { case Array(name) if name.nonEmpty => name }
+    }.toOption
+  }
+
   // reads all the lines from a single block (starts with @something, ends when the next block starts or the file ends)
   private def parseBlock: Map[String, Array[String]] = {
     var values = Map[String, Array[String]]()
+
+    val name = lines.current.dropWhile(_ != ' ').trim
+    values += ("name" -> Array(name))
 
     var ready = false
 
@@ -134,7 +151,7 @@ object FileIO {
       try {
 
         def newLine: Option[String] = {
-          Try(lineReader.readLine().takeWhile(_ != '#').trim.toLowerCase).toOption
+          Try(lineReader.readLine().takeWhile(_ != '#').trim).toOption
         }
 
         var line = newLine

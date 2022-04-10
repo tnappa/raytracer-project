@@ -1,5 +1,7 @@
 package Raytracer
 
+import Raytracer.Helpers.MyVector
+
 import java.awt.Color
 import scala.math._
 

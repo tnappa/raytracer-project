@@ -11,12 +11,12 @@ object RaytracerApp extends App {
 
   val scene = FileIO.buildScene("test_file.txt")
 
-  val frame = new JFrame("Raytracer")
+  val frame = new JFrame(scene.name)
   frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
 
   var bufferedImage = new BufferedImage(Width, Heigth, BufferedImage.TYPE_INT_RGB)
 
-  // get array that hold values of each pixel
+  // get array that holds values of each pixel
   val imgArray = bufferedImage.getRaster.getDataBuffer.asInstanceOf[DataBufferInt].getData
 
 

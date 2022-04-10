@@ -1,4 +1,4 @@
-package Raytracer
+package Raytracer.Helpers
 
 import java.awt.Color
 

@@ -12,6 +12,6 @@ package object Constants {
   val Width = 500
   val Heigth = 500
   val Fov = Pi/2 // 90 degree field of view
-  val NumOfSamples = 350
+  val NumOfSamples = 400
 
 }

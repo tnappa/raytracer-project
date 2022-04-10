@@ -1,11 +1,11 @@
-scene name
+scene Test scene
 
-@sphere
+@sphere mirror Sphere
 	r 150
 	p 250 150 250
 	s false
 
-@sphere
+@sphere small Sphere
 	r 50
 	p 100 400 100
 
@@ -15,30 +15,30 @@ scene name
 	p 251 250 650
 	f -0.2 0 -1
 
-@wall
+@wall blue wall
 	n 1 0 0
 	p 0 0 0
 	c 0 0 255
 
-@wall
-	n 0 1 0
+@wall floor
+	n 0 1 0  #comment2
 	p 0 0 0
 
-@wall
+@wall back wall
 	n 0 0 1
 	p 0 0 0
 
-@wall
+@wall red wall
 	n -1 0 0
 	p 500 500 700
 	c 255 0 0
 
-@wall
+@wall ceiling
 	n 0 -1 0
 	p 500 500 700
 	e 1.0
 
-@wall
+@wall wall behind
 	n 0 0 1
 	p 500 500 700
 

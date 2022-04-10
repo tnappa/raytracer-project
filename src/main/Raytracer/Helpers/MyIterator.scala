@@ -1,4 +1,4 @@
-package Raytracer
+package Raytracer.Helpers
 
 // class to add current method to Iterator
 class MyIterator[T](it: Iterable[T]) extends Iterable[T] {

@@ -1,6 +1,7 @@
 package Raytracer
 
 import Raytracer.Constants._
+import Raytracer.Helpers.MyVector
 
 import scala.math._
 
@@ -20,5 +21,7 @@ class Viewer(val position: MyVector, fac: MyVector) {
     val direction = origin + (xStep * x) + (yStep * y)
     new LightRay(direction, position)
   }
+
+  val rays = Array.tabulate(Width, Heigth)((x, y) => generateRay(x, y))
 
 }

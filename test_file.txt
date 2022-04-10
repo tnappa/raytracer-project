@@ -1,0 +1,44 @@
+scene name
+
+@sphere
+	r 150
+	p 250 150 250
+	s false
+
+@sphere
+	r 50
+	p 100 400 100
+
+#comment
+
+@viewer
+	p 251 250 650
+	f -0.2 0 -1
+
+@wall
+	n 1 0 0
+	p 0 0 0
+	c 0 0 255
+
+@wall
+	n 0 1 0
+	p 0 0 0
+
+@wall
+	n 0 0 1
+	p 0 0 0
+
+@wall
+	n -1 0 0
+	p 500 500 700
+	c 255 0 0
+
+@wall
+	n 0 -1 0
+	p 500 500 700
+	e 1.0
+
+@wall
+	n 0 0 1
+	p 500 500 700
+

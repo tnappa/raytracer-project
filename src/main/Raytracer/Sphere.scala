@@ -5,12 +5,21 @@ import scala.math._
 
 class Sphere(val center:    MyVector,
              val radius:    Double,
-             val color:     Color      = Color.WHITE,
-             val emittance: Double     = 0.0,
-             val isSmooth:  Boolean    = true
             ) extends Object {
 
   override def toString: String = s"center: ${center.toString}, radius: ${radius}"
+
+  private var col: Color   = Color.WHITE
+  private var emt: Double  = 0.0
+  private var smt: Boolean = true
+
+  def color = col
+  def emittance = emt
+  def isSmooth = smt
+
+  def setColor(c: Color) = col = c
+  def setEmittance(e: Double) = emt = e
+  def setSmoothness(s: Boolean) = smt = s
 
   def normal(position: MyVector): MyVector = {
     position - this.center

@@ -23,3 +23,16 @@ There's been two problems which I haven't been able to solve yet. The renders lo
 I have spent about 10 hours on the project in the last two weeks.
 
 I am behind schedule due to having a lot less time to spend on the project than expected.
+
+
+13.04.
+
+I have added an object FileIO that returns the scene given by the scene file. I also added MyIterator which is a regular iterator that can also return the current iterator value without side effects. I use it in FileIO to make the implementation cleaner. I changed the implementation of objects to not require color, smoothness etc. when creating them and instead use setColor etc. methods. I made the tracePath method tail recursive to make it more efficient. 
+
+I haven't completely tested the functionality of FileIO yet but it works correctly with correctly formatted files.
+
+I was able to fix the problem with small light sources not lighting up the scene enough by allowing rays to have a larger color value than 255. I haven't really progressed in trying to make the threads run efficiently in parallel and it's taking me way too much time to troubleshoot it that I decided to not worry about it until I have done all the other required functionality.
+
+I have spent about 15 hours on the project in the last two weeks.
+
+I am slightly behind schedule.

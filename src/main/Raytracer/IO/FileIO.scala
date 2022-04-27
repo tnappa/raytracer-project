@@ -1,20 +1,116 @@
 package Raytracer.IO
 
+import Raytracer.Constants.frame
 import Raytracer.Helpers.{MyIterator, MyVector}
 import Raytracer.{Scene, Sphere, Viewer, Wall}
 
 import java.awt.Color
 import java.io.{BufferedReader, FileNotFoundException, FileReader, IOException}
 import scala.util.{Success, Try}
+import scala.io.StdIn.readLine
 
 object FileIO {
 
   // iterator that keeps track of the current line
   private var lines = MyIterator[String]()
-  private val scene = new Scene
+  private var scene: Option[Scene] = None
 
-  def buildScene(source: String): Scene = {
+  def parseNewLine(): Boolean = {
+    var ret = true
 
+    val params = readLine().split(' ')
+
+    params match {
+      case Array("moveto", Double(x), Double(y), Double(z)) => moveTo(x, y, z)
+      case Array("move", Double(x), Double(y), Double(z))   => move(x, y, z)
+      case Array("turnto", Double(x), Double(y), Double(z))  => turnTo(x, y, z)
+      case Array("turn", Double(x), Double(y), Double(z))    => turn(x, y, z)
+      case Array("render", s: String)                       => render(s)
+      case Array("help")                                    => printHelp()
+      case Array("quit")                                    =>
+        scene.foreach(_.stopRenderThread())
+        ret = false
+      case _ => println("invalid command")
+    }
+
+    ret
+  }
+
+  private def printHelp(): Unit = {
+    println(
+      s"""Commands:
+        |help\t\t\t\topen this dialog
+        |render <filename>\trenders scene from the file
+        |moveto <x> <y> <z>\tmove viewer to the given coordinates
+        |move <x> <y> <z>\tmove viewer to the direction given by the coordinates
+        |turnto <x> <y> <z>\tturn viewer to the direction of the coordinates
+        |turn <x> <y> <z>\tturn viewer by the given amount
+        |quit\t\t\t\tquit the application""".stripMargin)
+  }
+
+  private def moveTo(x: Double, y: Double, z: Double): Unit = {
+    if (scene.isDefined) {
+      val position = MyVector(x, y, z)
+      scene.get.addViewer(new Viewer(position, scene.get.viewer.get.facing))
+      println(s"moving to ${position}")
+      scene.get.rerender()
+    }
+    else println("Scene not defined")
+  }
+
+  private def move(x: Double, y: Double, z: Double): Unit = {
+    if (scene.isDefined) {
+      val viewer = scene.get.viewer.get
+      val position = viewer.position + MyVector(x, y, z)
+      scene.get.addViewer(new Viewer(position, viewer.facing))
+      println(s"moving to ${position}")
+      scene.get.rerender()
+    }
+    else println("Scene not defined")
+  }
+
+  private def turnTo(x: Double, y: Double, z: Double): Unit = {
+    if (scene.isDefined) {
+      val direction = MyVector(x, y, z)
+      if (direction.lenght == 0) println("invalid direction")
+      else {
+        scene.get.addViewer(new Viewer(scene.get.viewer.get.position, direction))
+        println(s"turning to ${direction}")
+        scene.get.rerender()
+      }
+    }
+    else println("Scene not defined")
+  }
+
+  private def turn(x: Double, y: Double, z: Double): Unit = {
+    if (scene.isDefined) {
+      val viewer = scene.get.viewer.get
+      val direction = viewer.facing + MyVector(x, y, z)
+      if (direction.lenght == 0) println("invalid direction")
+      else {
+        scene.get.addViewer(new Viewer(viewer.position, direction))
+        println(s"turning to ${direction}")
+        scene.get.rerender()
+      }
+    }
+    else println("Scene not defined")
+  }
+
+  private def render(source: String): Unit = {
+    scene.foreach(_.stopRenderThread())
+    buildScene(source)
+
+    scene.foreach { scene =>
+      scene.startRenderThread()
+      frame.setVisible(true)
+    }
+
+  }
+
+  // creates the scene from file sets scene to None if it fails
+  def buildScene(source: String): Unit = {
+
+    scene = Some(new Scene)
     readFully(source)
 
     try {
@@ -25,7 +121,8 @@ object FileIO {
       if (!currentLine.startsWith("scene")) throw new CorruptedFileException("Invalid file type")
 
       val name = currentLine.dropWhile(_ != ' ').trim
-      if (name.nonEmpty) scene.setName(name)
+      if (name.nonEmpty) scene.get.setName(name)
+      frame.setTitle(scene.get.name)
 
       while (lines.hasNext) {
         currentLine match {
@@ -36,13 +133,13 @@ object FileIO {
         }
       }
 
-      if (scene.objects.isEmpty) throw new CorruptedFileException("The scene must have at least one object")
-      if (scene.viewer.isEmpty) throw new CorruptedFileException("The scene must have a viewer")
+      if (scene.get.objects.isEmpty) throw new CorruptedFileException("The scene must have at least one object")
+      if (scene.get.viewer.isEmpty) throw new CorruptedFileException("The scene must have a viewer")
 
     } catch {
-      case e: CorruptedFileException => println(s"Could not build scene: ${e.getMessage}")
+      case e: CorruptedFileException => println(s"Could not build scene: ${e.getMessage}") ; scene = None
+      case e: NoSuchElementException => scene = None// catch this to prevent crash when readFully fails
     }
-    scene
   }
 
   private def parseViewer(): Unit = {
@@ -55,7 +152,7 @@ object FileIO {
 
     if (position.isEmpty || facing.isEmpty) throw new CorruptedFileException("Invalid viewer parameters")
 
-    scene.addViewer(new Viewer(position.get, facing.get))
+    scene.get.addViewer(new Viewer(position.get, facing.get))
   }
 
   private def parseSphere(): Unit = {
@@ -72,7 +169,7 @@ object FileIO {
     val sphere = new Sphere(position.get, radius.get)
     setObjectAttributes(sphere, values)
 
-    scene.addObject(sphere)
+    scene.get.addObject(sphere)
   }
 
   private def parseWall(): Unit = {
@@ -89,7 +186,7 @@ object FileIO {
     val wall = new Wall(normal.get, position.get)
     setObjectAttributes(wall, values)
 
-    scene.addObject(wall)
+    scene.get.addObject(wall)
   }
 
   // sets the optional attributes of the given object
@@ -161,6 +258,8 @@ object FileIO {
           line = newLine
         }
 
+        lines = MyIterator(newLines)
+
       } finally {
         fileReader.close()
         lineReader.close()
@@ -170,7 +269,6 @@ object FileIO {
       case e: IOException => println("An error occured while reading the file")
     }
 
-    lines = MyIterator(newLines)
   }
 
 

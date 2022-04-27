@@ -4,7 +4,7 @@ import scala.math._
 
 class MyVector(val x: Double, val y: Double, val z: Double) {
 
-  override def toString: String = s"${x}i + ${y}j + ${z}k"
+  override def toString: String = s"(${x}, ${y}, ${z})"
 
   def asUnit: MyVector = {
     require(this.lenght != 0, "zero vector does not have a unit vector")

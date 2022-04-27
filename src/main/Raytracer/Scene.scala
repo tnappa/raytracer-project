@@ -3,7 +3,6 @@ package Raytracer
 import Raytracer.Constants._
 import Raytracer.Helpers.{MyColor, MyVector}
 
-import javax.swing.JFrame
 import scala.annotation.tailrec
 
 class Scene {
@@ -11,6 +10,7 @@ class Scene {
   private var objectList = Vector[Object]()
   private var viewr: Option[Viewer] = None
   private var name_ = "Raytracer"
+  private var renderThread: Option[Thread] = None
 
   def name = name_
   def setName(s: String): Unit = name_ = s
@@ -76,22 +76,46 @@ class Scene {
     tracePath(newRay, Some(obj), depth + 1)
   }
 
+  def startRenderThread(): Unit = {
+    val t = new Thread(new RenderWorker)
+    renderThread = Some(t)
+    t.start()
+  }
+
+  def stopRenderThread(): Unit = {
+    renderThread.foreach(_.interrupt())
+  }
+
+  def rerender(): Unit = {
+    stopRenderThread()
+    startRenderThread()
+  }
+
+  // run rendering in a separate thread from main
+  private class RenderWorker extends Runnable {
+    def run(): Unit = {
+      println("rendering...")
+      renderScene()
+      println("DONE")
+    }
+  }
+
   // renders scene by changing values corresponding to each pixel in imgArray and update frame each iteration
-  def renderScene(imgArray: Array[Int], frame: JFrame): Unit = {
+  private def renderScene(): Unit = {
     require(viewer.isDefined, "Viewer must be defined")
 
-    for {
-      y <- (0 until Heigth)
-      x <- (0 until Width)
-    } {
-      imgArray(y * Width + x) = computeColor(x, y, imgArray)
+    var i = 0
+    while (i < Width * Heigth && !Thread.interrupted()) {
+      var y = i / Heigth
+      var x = i % Heigth
+      imgArray(i) = computeColor(x, y)
       frame.repaint()
+      i += 1
     }
-
   }
 
   // compute color for each ray corresponding to each pixel in the final image
-  def computeColor(x: Int, y: Int, imgArray: Array[Int]): Int = {
+  def computeColor(x: Int, y: Int): Int = {
     var color = MyColor.BLACK
     val rays = viewer.get.rays
     for (i <- 0 until NumOfSamples) {

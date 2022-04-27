@@ -41,3 +41,6 @@ class MyVector(val x: Double, val y: Double, val z: Double) {
     new MyVector(this.x + other.x, this.y + other.y, this.z + other.z)
   }
 }
+object MyVector {
+  def apply(x: Double, y: Double, z: Double): MyVector = new MyVector(x, y, z)
+}

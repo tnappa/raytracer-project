@@ -1,0 +1,41 @@
+scene Test scene 2
+
+@sphere center Sphere
+	r 150
+	p 250 150 250
+
+@sphere light
+	r 70
+	p 200 400 150
+	e 10.0
+
+@viewer
+	p 251 250 650
+	f -0.2 0 -1
+
+@wall left wall
+	n 1 0 0
+	p 0 0 0
+	c 0 255 0
+
+@wall floor
+	n 0 1 0
+	p 0 0 0
+
+@wall back wall
+	n 0 0 1
+	p 0 0 0
+
+@wall right wall
+	n -1 0 0
+	p 500 500 700
+	c 255 0 0
+
+@wall ceiling
+	n 0 -1 0
+	p 500 500 700
+
+@wall wall behind
+	n 0 0 1
+	p 500 500 700
+

@@ -31,7 +31,7 @@ class Sphere(val center:    MyVector,
   // returns only the closest intersection in the direction of the ray that is not the origin of the ray
   def intersection(ray: LightRay): Option[MyVector] = {
     val unitRay = ray.asUnit
-    val determinant = pow( unitRay * (ray.origin - this.center), 2 ) - (pow( (ray.origin - this.center).lenght, 2 ) - pow(this.radius, 2))
+    val determinant = pow( unitRay * (ray.origin - this.center), 2 ) - (pow( (ray.origin - this.center).length, 2 ) - pow(this.radius, 2))
 
     if (determinant >= 0) {
       val distance1 = (unitRay * (ray.origin - this.center)) * -1 - sqrt(determinant)

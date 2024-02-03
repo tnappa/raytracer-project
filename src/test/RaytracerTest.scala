@@ -24,9 +24,9 @@ class RaytracerTest extends AnyFlatSpec {
 
     var rays = Vector[LightRay]()
     for (v <- combs) {
-      if (v._1.lenght != 0)
+      if (v._1.length != 0)
         rays = rays :+ new LightRay(v._1, v._2)
-      if (v._2.lenght != 0)
+      if (v._2.length != 0)
         rays = rays :+ new LightRay(v._2, v._1)
     }
     rays
@@ -55,15 +55,15 @@ class RaytracerTest extends AnyFlatSpec {
 
   "MyVector lenght method" should "calculate lenght correctly" in {
     for (v <- testVectors) {
-      v.lenght shouldBe sqrt(v.x * v.x + v.y * v.y + v.z * v.z) +- 0.00001
+      v.length shouldBe sqrt(v.x * v.x + v.y * v.y + v.z * v.z) +- 0.00001
     }
   }
 
 
   "MyVector asUnit method" should "return a vector with lenght one if called for a non-zero vector" in {
     for (v <- testVectors) {
-      if (v.lenght != 0) {
-        v.asUnit.lenght shouldBe 1.0 +- 0.00001
+      if (v.length != 0) {
+        v.asUnit.length shouldBe 1.0 +- 0.00001
       }
     }
   }
@@ -80,7 +80,7 @@ class RaytracerTest extends AnyFlatSpec {
       ray <- testRays
       sphere <- testSpheres
     } {
-      val determinant = pow( ray.asUnit * (ray.origin - sphere.center), 2 ) - (pow( (ray.origin - sphere.center).lenght, 2 ) - pow(sphere.radius, 2))
+      val determinant = pow( ray.asUnit * (ray.origin - sphere.center), 2 ) - (pow( (ray.origin - sphere.center).length, 2 ) - pow(sphere.radius, 2))
       val distance1 = (ray.asUnit * (ray.origin - sphere.center)) * -1 - sqrt(determinant)
       val distance2 = distance1 + 2 * sqrt(determinant)
 
@@ -103,7 +103,7 @@ class RaytracerTest extends AnyFlatSpec {
 
       if (intersection.isDefined) {
         withClue(s"LightRay ${ray.toString}, has intersection with sphere: ${sphere.toString} at ${intersection.get.toString}. Intersections distance from sphere's center: ") {
-          (intersection.get - sphere.center).lenght shouldBe sphere.radius +- 0.00001
+          (intersection.get - sphere.center).length shouldBe sphere.radius +- 0.00001
         }
       }
     }
@@ -117,7 +117,7 @@ class RaytracerTest extends AnyFlatSpec {
       val intersection = sphere.intersection(ray)
 
       if (intersection.isDefined) {
-        (intersection.get - ray.origin).lenght should not be (0.0 +- 0.000001)
+        (intersection.get - ray.origin).length should not be (0.0 +- 0.000001)
       }
     }
   }

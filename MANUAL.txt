@@ -1,0 +1,21 @@
+1. Extract the zip file
+2. Open command prompt in the same directory as this file
+3. Enter the command: sbt run
+4. The program starts. To get list of availabe commands enter command: help
+
+
+Example:
+
+> sbt run
+*program starts*
+> render demo1.txt
+rendering...
+DONE
+> move -100 -100 -100
+rendering...
+DONE
+> turnto 2 0 -1
+rendering...
+DONE
+> quit
+*program shuts down*

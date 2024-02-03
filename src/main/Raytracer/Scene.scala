@@ -22,7 +22,7 @@ class Scene {
   def viewer = viewr
 
   // inspired by https://en.wikipedia.org/wiki/Path_tracing#Algorithm
-  @tailrec final def tracePath(ray: LightRay, prevObj: Option[Object], depth: Int): MyColor = {
+  @tailrec private final def tracePath(ray: LightRay, prevObj: Option[Object], depth: Int): MyColor = {
     // if ray bounced enough times return black
     if (depth >= MaxDepth) return MyColor.BLACK
 
@@ -39,10 +39,10 @@ class Scene {
     if (intersectingObjs.isEmpty) return MyColor.BLACK
 
     // choose object and intersection point closest to light rays origin
-    val (obj, intersection) = intersectingObjs.minBy{ case (obj, intersect) => (ray.origin - intersect).lenght }
+    val (obj, intersection) = intersectingObjs.minBy{ case (obj, intersect) => (ray.origin - intersect).length }
     val normal = obj.normal(intersection)
 
-    // for now objects can either reflect or emmit light, but not both
+    // objects can either reflect or emmit light, but not both
     if (obj.emittance > 0.0) return MyColor(obj.color) * ray.color * obj.emittance
 
     // calculate diffuse reflection by randomly picking a ray in the hemisphere of normal
@@ -94,15 +94,15 @@ class Scene {
   // run rendering in a separate thread from main
   private class RenderWorker extends Runnable {
     def run(): Unit = {
-      println("rendering...")
       renderScene()
-      println("DONE")
     }
   }
 
   // renders scene by changing values corresponding to each pixel in imgArray and update frame each iteration
   private def renderScene(): Unit = {
     require(viewer.isDefined, "Viewer must be defined")
+
+    println("rendering...")
 
     var i = 0
     while (i < Width * Heigth && !Thread.interrupted()) {
@@ -112,10 +112,12 @@ class Scene {
       frame.repaint()
       i += 1
     }
+
+    if (i == Width * Heigth) println("DONE") // only print when thread is not interrupted
   }
 
   // compute color for each ray corresponding to each pixel in the final image
-  def computeColor(x: Int, y: Int): Int = {
+  private def computeColor(x: Int, y: Int): Int = {
     var color = MyColor.BLACK
     val rays = viewer.get.rays
     for (i <- 0 until NumOfSamples) {

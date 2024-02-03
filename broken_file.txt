@@ -1,0 +1,40 @@
+scene no viewer
+
+@sphere blue Sphere
+	r 150
+	p 250 150 250
+	c 255 0 0
+
+@sphere light
+	r 50
+	p 100 400 100
+	e 10.0
+
+#@viewer
+	p 251 250 650
+	f -0.2 0 -1
+
+@wall left wall
+	n 1 0 0
+	p 0 0 0
+
+@wall floor
+	n 0 1 0
+	p 0 0 0
+
+@wall back wall
+	n 0 0 1
+	p 0 0 0
+
+@wall right wall
+	n -1 0 0
+	p 500 500 700
+
+@wall ceiling
+	n 0 -1 0
+	p 500 500 700
+	e 1.0
+
+@wall wall behind
+	n 0 0 1
+	p 500 500 700

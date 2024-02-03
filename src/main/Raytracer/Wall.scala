@@ -8,7 +8,7 @@ class Wall(normal:        MyVector,
            val position:  MyVector
           ) extends Object {
 
-  require(normal.lenght != 0, "Wall must have non-zero normal")
+  require(normal.length != 0, "Wall must have non-zero normal")
 
   private var col: Color   = Color.WHITE
   private var emt: Double  = 0.0

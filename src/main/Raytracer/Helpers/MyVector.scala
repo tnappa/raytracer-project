@@ -7,8 +7,8 @@ class MyVector(val x: Double, val y: Double, val z: Double) {
   override def toString: String = s"(${x}, ${y}, ${z})"
 
   def asUnit: MyVector = {
-    require(this.lenght != 0, "zero vector does not have a unit vector")
-    this * (1 / this.lenght)
+    require(this.length != 0, "zero vector does not have a unit vector")
+    this * (1 / this.length)
   }
 
   // cross product of this x other
@@ -19,7 +19,7 @@ class MyVector(val x: Double, val y: Double, val z: Double) {
     new MyVector(crossX, crossY, crossZ)
   }
 
-  def lenght: Double = {
+  def length: Double = {
     sqrt(pow(x,2) + pow(y,2) + pow(z,2))
   }
 

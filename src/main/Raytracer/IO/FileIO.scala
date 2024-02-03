@@ -13,6 +13,7 @@ object FileIO {
 
   // iterator that keeps track of the current line
   private var lines = MyIterator[String]()
+
   private var scene: Option[Scene] = None
 
   def parseNewLine(): Boolean = {
@@ -72,7 +73,7 @@ object FileIO {
   private def turnTo(x: Double, y: Double, z: Double): Unit = {
     if (scene.isDefined) {
       val direction = MyVector(x, y, z)
-      if (direction.lenght == 0) println("invalid direction")
+      if (direction.length == 0) println("invalid direction")
       else {
         scene.get.addViewer(new Viewer(scene.get.viewer.get.position, direction))
         println(s"turning to ${direction}")
@@ -86,7 +87,7 @@ object FileIO {
     if (scene.isDefined) {
       val viewer = scene.get.viewer.get
       val direction = viewer.facing + MyVector(x, y, z)
-      if (direction.lenght == 0) println("invalid direction")
+      if (direction.length == 0) println("invalid direction")
       else {
         scene.get.addViewer(new Viewer(viewer.position, direction))
         println(s"turning to ${direction}")
@@ -108,38 +109,43 @@ object FileIO {
   }
 
   // creates the scene from file sets scene to None if it fails
-  def buildScene(source: String): Unit = {
+  private def buildScene(source: String): Unit = {
 
-    scene = Some(new Scene)
     readFully(source)
 
-    try {
+    if (lines.nonEmpty) {
 
-      def currentLine: String = lines.current
+      scene = Some(new Scene)
 
-      lines.next()
-      if (!currentLine.startsWith("scene")) throw new CorruptedFileException("Invalid file type")
+      try {
 
-      val name = currentLine.dropWhile(_ != ' ').trim
-      if (name.nonEmpty) scene.get.setName(name)
-      frame.setTitle(scene.get.name)
+        def currentLine: String = lines.current
 
-      while (lines.hasNext) {
-        currentLine match {
-          case s if s.startsWith("@sphere") => parseSphere()
-          case s if s.startsWith("@wall")   => parseWall()
-          case s if s.startsWith("@viewer") => parseViewer()
-          case _ => lines.next()
+        lines.next()
+        if (!currentLine.startsWith("scene")) throw new CorruptedFileException("Invalid file type")
+
+        val name = currentLine.dropWhile(_ != ' ').trim
+        if (name.nonEmpty) scene.get.setName(name)
+        frame.setTitle(scene.get.name)
+
+        while (lines.hasNext) {
+          currentLine match {
+            case s if s.startsWith("@sphere") => parseSphere()
+            case s if s.startsWith("@wall") => parseWall()
+            case s if s.startsWith("@viewer") => parseViewer()
+            case _ => lines.next()
+          }
         }
+
+        if (scene.get.objects.isEmpty) throw new CorruptedFileException("The scene must have at least one object")
+        if (scene.get.viewer.isEmpty) throw new CorruptedFileException("The scene must have a viewer")
+
+      } catch {
+        case e: CorruptedFileException => println(s"Could not build scene: ${e.getMessage}"); scene = None
+        //case e: NoSuchElementException => scene = None // catch this to prevent crash when readFully fails
       }
-
-      if (scene.get.objects.isEmpty) throw new CorruptedFileException("The scene must have at least one object")
-      if (scene.get.viewer.isEmpty) throw new CorruptedFileException("The scene must have a viewer")
-
-    } catch {
-      case e: CorruptedFileException => println(s"Could not build scene: ${e.getMessage}") ; scene = None
-      case e: NoSuchElementException => scene = None// catch this to prevent crash when readFully fails
     }
+    else scene = None
   }
 
   private def parseViewer(): Unit = {
@@ -236,8 +242,9 @@ object FileIO {
     values
   }
 
-  // reads all the lines from the file and return iterable with lines trimmed, in lower case and comments removed
+  // reads all the lines from the file and return iterable with lines trimmed and comments removed
   private def readFully(source: String): Unit = {
+    lines = MyIterator[String]()
     var newLines = Seq[String]()
 
     try {
